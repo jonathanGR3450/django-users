@@ -1,0 +1,32 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    container_name: db_playground
+    volumes:
+      - "dbplayground:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_DB=data
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - "5434"
+    ports:
+      - "5435:5432"
+  web:
+    build: .
+    container_name: web_playground
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=data
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+volumes:
+  dbplayground:
